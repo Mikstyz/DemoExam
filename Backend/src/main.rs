@@ -1,4 +1,6 @@
-pub mod config {}
+pub mod config {
+    pub mod cfg;
+}
 
 pub mod dto;
 pub mod handlers;
@@ -9,4 +11,5 @@ pub mod services;
 const CONFIG_DIR: &str = "config.toml";
 const DB: &str = "db";
 
-fn main() {}
+#[tokio::main]
+async fn main() {}
