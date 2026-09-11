@@ -10,4 +10,3 @@ const CONFIG_DIR: &str = "config.toml";
 const DB: &str = "db";
 
 fn main() {}
-
