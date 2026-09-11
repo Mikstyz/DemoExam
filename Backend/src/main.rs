@@ -4,6 +4,8 @@ pub mod config {
 }
 use crate::config::cfg::Cfg;
 
+pub mod db;
+
 pub mod dto;
 pub mod models;
 
