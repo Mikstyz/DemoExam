@@ -1,5 +1,4 @@
 use crate::db::Db;
-use crate::models::user::UserModel;
 use rusqlite::{Connection, OptionalExtension, Result, params};
 use std::sync::Arc;
 
@@ -32,7 +31,7 @@ impl UserRepo {
         None
     }
 
-    pub fn update(&self, id: u128, newData: UserModel) -> Option<bool> {
+    pub fn update(&self, id: u128) -> Option<bool> {
         let request = "";
         None
     }

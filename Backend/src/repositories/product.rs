@@ -1,5 +1,4 @@
 use crate::db::Db;
-use crate::models::product::ProductModel;
 use rusqlite::{Connection, OptionalExtension, Result, params};
 use std::{sync::Arc, vec};
 

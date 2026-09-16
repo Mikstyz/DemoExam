@@ -1,5 +1,4 @@
 use log::{self, info};
-use rusqlite::{Connection, OptionalExtension, Result, params};
 
 //config
 pub mod config {
