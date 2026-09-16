@@ -1,1 +1,1 @@
-pub struct User {}
+pub struct UserModel {}

@@ -1,4 +1,4 @@
-pub struct Product {
+pub struct ProductModel {
     pub name: String,
     pub count: u64,
     pub price: f64,

@@ -1,5 +1,5 @@
 use crate::db::Db;
-use crate::models::user::User;
+use crate::models::user::UserModel;
 use rusqlite::{Connection, OptionalExtension, Result, params};
 use std::sync::Arc;
 
@@ -12,21 +12,33 @@ impl UserRepo {
         Self { db: db }
     }
 
-    pub fn is(&self) -> Option<bool> {
-        None
-    }
-    pub fn add(&self) -> Option<bool> {
-        None
-    }
-    pub fn select(&self) -> Option<bool> {
+    pub fn is(&self, id: u128) -> Option<bool> {
+        let request = "";
         None
     }
 
-    pub fn update(&self) -> Option<bool> {
+    pub fn add(&self, login: &str, password: &str) -> Option<bool> {
+        let request = "";
         None
     }
 
-    pub fn remove(&self) -> Option<bool> {
+    pub fn authentication(&self, login: &str, password: &str) -> Option<bool> {
+        let request = "";
+        None
+    }
+
+    pub fn select(&self, id: u128, fields: Vec<String>) -> Option<bool> {
+        let request = "";
+        None
+    }
+
+    pub fn update(&self, id: u128, newData: UserModel) -> Option<bool> {
+        let request = "";
+        None
+    }
+
+    pub fn remove(&self, id: u128) -> Option<bool> {
+        let request = "";
         None
     }
 }

@@ -1,8 +1,13 @@
+use log::{self, info};
+use rusqlite::{Connection, OptionalExtension, Result, params};
+
 //config
 pub mod config {
     pub mod cfg;
 }
 use crate::config::cfg::Cfg;
+
+pub mod enums;
 
 pub mod db;
 
@@ -17,9 +22,14 @@ pub mod services;
 
 //constants
 const CONFIG_DIR: &str = "config.toml";
-const DB: &str = "db";
 
 #[tokio::main]
-async fn main() {
-    let config = Cfg::load(CONFIG_DIR);
+async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
+    let cfg = Cfg::load(CONFIG_DIR)?;
+
+    let db_conn = db::Db::initialization(&cfg.dbdir);
+
+    //
+    Ok(())
 }

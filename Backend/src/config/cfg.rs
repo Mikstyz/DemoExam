@@ -8,20 +8,7 @@ pub struct Cfg {
     // Settings
     pub host: String,
     pub port: usize,
-    pub worker_concurrency: usize,
-
-    // User setting
-    pub user_timeout: usize,
-    pub user_health_interval: usize,
-    pub user_health_failures: usize,
-
-    // Backend setting
-    pub backend_timeout: usize,
-    pub backend_health_interval: usize,
-    pub backend_health_failures: usize,
-
-    // Backends
-    pub backends: Vec<i32>, // ent_backend::Backend
+    pub dbdir: String,
 }
 
 impl Cfg {
