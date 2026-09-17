@@ -3,7 +3,7 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::enums::orderStatus::OrderStatus;
+use crate::enums::order_status::OrderStatus;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "orders")]
