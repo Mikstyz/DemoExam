@@ -3,6 +3,8 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::enums::orderStatus::OrderStatus;
+
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "orders")]
 pub struct Model {
@@ -10,6 +12,7 @@ pub struct Model {
     pub id: Uuid,
     pub owner_id: Uuid,
     pub created_at: DateTime<Utc>,
+    pub statues: OrderStatus,
     pub total: i64,
 }
 

@@ -1,13 +1,12 @@
-use crate::db::Db;
 use rusqlite::{Connection, OptionalExtension, Result, params};
 use std::{sync::Arc, vec};
 
 pub struct ProductRepo {
-    db: Arc<Db>,
+    db: Arc<Connection>,
 }
 
 impl ProductRepo {
-    pub fn new(db: Arc<Db>) -> Self {
+    pub fn new(db: Arc<Connection>) -> Self {
         Self { db: db }
     }
 

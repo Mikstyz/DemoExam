@@ -1,5 +1,3 @@
-use log::{self, info};
-
 //config
 pub mod config {
     pub mod cfg;
@@ -27,7 +25,13 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
     let cfg = Cfg::load(CONFIG_DIR)?;
 
-    let db_conn = db::Db::initialization(&cfg.dbdir);
+    let db = db::Db::initialization(&cfg.dbdir).await?;
+
+    //create tables
+    db.create_tables().await?;
+
+    //view tables shema
+    db.print_schema().await?;
 
     //
     Ok(())
