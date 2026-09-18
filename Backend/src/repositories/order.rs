@@ -20,22 +20,12 @@ impl OrderRepo {
         None
     }
 
-    pub fn authentication(&self, login: &str, password: &str) -> Option<bool> {
-        let request = "";
-        None
-    }
-
     pub fn select(&self, id: u128, fields: Vec<String>) -> Option<bool> {
         let request = "";
         None
     }
 
     pub fn update(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
-    }
-
-    pub fn remove(&self, id: u128) -> Option<bool> {
         let request = "";
         None
     }

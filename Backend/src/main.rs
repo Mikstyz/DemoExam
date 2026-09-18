@@ -24,7 +24,6 @@ const CONFIG_DIR: &str = "config.toml";
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
     let cfg = Cfg::load(CONFIG_DIR)?;
-
     let db = db::Db::initialization(&cfg.dbdir).await?;
 
     //create tables
