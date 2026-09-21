@@ -1,42 +1,38 @@
-use rusqlite::{Connection, OptionalExtension, Result, params};
-use std::sync::Arc;
+use sea_orm::{DatabaseConnection, DbErr, DeleteResult};
+use uuid::Uuid;
 
-pub struct UserRepo {
-    db: Arc<Connection>,
+use crate::models::user;
+
+pub struct UserRepo<'a> {
+    db: &'a DatabaseConnection,
 }
 
-impl UserRepo {
-    pub fn new(db: Arc<Connection>) -> Self {
+impl<'a> UserRepo<'a> {
+    pub fn new(db: &'a DatabaseConnection) -> Self {
         Self { db: db }
     }
 
-    pub fn is(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+    pub fn is(&self, id: Uuid) -> Option<bool> {
+        todo!()
     }
 
     pub fn add(&self, login: &str, password: &str) -> Option<bool> {
-        let request = "";
-        None
+        todo!()
     }
 
     pub fn authentication(&self, login: &str, password: &str) -> Option<bool> {
-        let request = "";
-        None
+        todo!()
     }
 
-    pub fn select(&self, id: u128, fields: Vec<String>) -> Option<bool> {
-        let request = "";
-        None
+    pub fn select(&self, id: Uuid, fields: Vec<String>) -> Option<bool> {
+        todo!()
     }
 
-    pub fn update(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+    pub fn update(&self, id: Uuid) -> Option<bool> {
+        todo!()
     }
 
-    pub fn remove(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
-    }
+    pub fn remove(&self, id: Uuid) -> Option<bool> {
+        todo!()
+    } 
 }

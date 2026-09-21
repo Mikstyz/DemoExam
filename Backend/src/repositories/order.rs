@@ -1,32 +1,30 @@
-use rusqlite::{Connection, OptionalExtension, Result, params};
-use std::{sync::Arc, vec};
+use sea_orm::{DatabaseConnection, DbErr, DeleteResult};
+use uuid::Uuid;
 
-pub struct OrderRepo {
-    db: Arc<Connection>,
+use crate::models::order;
+
+pub struct OrderRepo<'a> {
+    db: &'a DatabaseConnection,
 }
 
-impl OrderRepo {
-    pub fn new(db: Arc<Connection>) -> Self {
+impl<'a> OrderRepo<'a> {
+    pub fn new(db: &'a DatabaseConnection) -> Self {
         Self { db: db }
     }
 
     pub fn is(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+        todo!()
     }
 
     pub fn add(&self, login: &str, password: &str) -> Option<bool> {
-        let request = "";
-        None
+        todo!()
     }
 
     pub fn select(&self, id: u128, fields: Vec<String>) -> Option<bool> {
-        let request = "";
-        None
+        todo!()
     }
 
     pub fn update(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+        todo!()
     }
 }

@@ -1,42 +1,38 @@
-use rusqlite::{Connection, OptionalExtension, Result, params};
-use std::{sync::Arc, vec};
+use sea_orm::{DatabaseConnection, DbErr, DeleteResult};
+use uuid::Uuid;
 
-pub struct ProductRepo {
-    db: Arc<Connection>,
+use crate::models::product;
+
+pub struct ProductRepo<'a> {
+    db: &'a DatabaseConnection,
 }
 
-impl ProductRepo {
-    pub fn new(db: Arc<Connection>) -> Self {
-        Self { db: db }
+impl<'a> ProductRepo<'a> {
+    pub fn new(db: &'a DatabaseConnection) -> Self {
+        Self { db }
     }
 
-    pub fn is(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+    pub async fn find_by_id(&self, id: Uuid) -> Result<Option<product::Model>, DbErr> {
+        todo!()
     }
 
-    pub fn add(&self) -> Option<bool> {
-        let request = "";
-        None
+    pub async fn find_all(&self) -> Result<Vec<product::Model>, DbErr> {
+        todo!()
     }
 
-    pub fn select(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+    pub async fn find_by_owner(&self, owner_id: Uuid) -> Result<Vec<product::Model>, DbErr> {
+        todo!()
     }
 
-    pub fn update(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+    pub async fn create(&self, product: product::ActiveModel) -> Result<product::Model, DbErr> {
+        todo!()
     }
 
-    pub fn remove(&self, id: u128) -> Option<bool> {
-        let request = "";
-        None
+    pub async fn update(&self, product: product::ActiveModel) -> Result<product::Model, DbErr> {
+        todo!()
     }
 
-    pub fn search(&self, filters: Vec<String>) -> Option<bool> {
-        let request = "";
-        None
+    pub async fn delete(&self, id: Uuid) -> Result<DeleteResult, DbErr> {
+        todo!()
     }
 }
