@@ -5,6 +5,7 @@ pub mod config {
 use crate::config::cfg::Cfg;
 
 pub mod enums;
+pub mod helper;
 
 pub mod db;
 
