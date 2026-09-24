@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -9,6 +10,9 @@ pub struct Model {
     pub id: Uuid,
     pub owner_id: Uuid,
     pub name: String,
+    pub created: DateTime<Utc>,
+    pub revews: i64,
+    pub sales: String,
     pub count: i64,
     pub price: i64,
     pub description: Option<String>,
