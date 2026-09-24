@@ -9,6 +9,7 @@ pub struct Cfg {
     pub host: String,
     pub port: usize,
     pub dbdir: String,
+    pub storage_dir: String,
 }
 
 impl Cfg {
