@@ -8,6 +8,7 @@ pub mod enums;
 pub mod helper;
 
 pub mod db;
+pub mod storage;
 
 pub mod dto;
 pub mod models;
