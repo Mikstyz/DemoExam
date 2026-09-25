@@ -1,13 +1,13 @@
 use sea_orm::{DatabaseConnection, DbErr, DeleteResult};
 use uuid::Uuid;
 
-use crate::models::shop;
+use crate::models::category;
 
-pub struct ShopRepo<'a> {
+pub struct CategoryRepo<'a> {
     db: &'a DatabaseConnection,
 }
 
-impl<'a> ShopRepo<'a> {
+impl<'a> CategoryRepo<'a> {
     pub fn new(db: &'a DatabaseConnection) -> Self {
         Self { db: db }
     }

@@ -15,16 +15,4 @@ impl<'a> OrderProductRepo<'a> {
     pub fn is(&self, id: Uuid) -> Option<bool> {
         todo!()
     }
-
-    pub fn add(&self, login: &str, password: &str) -> Option<bool> {
-        todo!()
-    }
-
-    pub fn select(&self, id: Uuid) -> Option<bool> {
-        todo!()
-    }
-
-    pub fn update(&self, id: Uuid) -> Option<bool> {
-        todo!()
-    }
 }
