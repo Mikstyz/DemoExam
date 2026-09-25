@@ -5,10 +5,3 @@ pub enum Filter {
     MaxPrice(f64),      // PriceLess
     MinReviews(i32),    // Миниамльное количество отзывов
 }
-
-pub enum SortBy {
-    Popularity, // Популярность товара
-    DateAdded,  // Дата добавления
-    PriceAsc,   // Сначала дешевые
-    PriceDesc,  // Сначала дорогие
-}
