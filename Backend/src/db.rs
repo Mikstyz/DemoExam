@@ -22,19 +22,27 @@ impl Db {
         let schema = Schema::new(backend);
 
         let tables = [
-            schema
+            schema //User model
                 .create_table_from_entity(models::user::Entity)
                 .if_not_exists()
                 .to_owned(),
-            schema
+            schema //User avatar model
+                .create_table_from_entity(models::avatar::Entity)
+                .if_not_exists()
+                .to_owned(),
+            schema //Product model
                 .create_table_from_entity(models::product::Entity)
                 .if_not_exists()
                 .to_owned(),
-            schema
+            schema //Product images model
+                .create_table_from_entity(models::product_images::Entity)
+                .if_not_exists()
+                .to_owned(),
+            schema //Order model
                 .create_table_from_entity(models::order::Entity)
                 .if_not_exists()
                 .to_owned(),
-            schema
+            schema //Product in order model
                 .create_table_from_entity(models::order_product::Entity)
                 .if_not_exists()
                 .to_owned(),
