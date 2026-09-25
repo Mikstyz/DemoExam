@@ -14,22 +14,18 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::order::Entity")]
-    Order,
-
-    #[sea_orm(has_many = "super::product::Entity")]
-    Product,
+    #[sea_orm(
+        belongs_to = "super::user::Entity",
+        from = "Column::OwnerId",
+        to = "super::user::Column::Id"
+    )]
+    User,
 }
 
-impl Related<super::order::Entity> for Entity {
+// Оставлен только нужный impl для связи с Юзером
+impl Related<super::user::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Order.def()
-    }
-}
-
-impl Related<super::product::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Product.def()
+        Relation::User.def()
     }
 }
 
