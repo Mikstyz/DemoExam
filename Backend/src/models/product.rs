@@ -9,13 +9,18 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub owner_id: Uuid,
-    pub name: String,
+    pub category_id: Uuid,
     pub created: DateTime<Utc>,
-    pub revews: i64,
+
+    pub name: String,
+    pub description: Option<String>,
+
+    pub reviews_count: i64,
+    pub reviews_sum: i64,
+
     pub sales: String,
     pub count: i64,
     pub price: i64,
-    pub description: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -23,9 +28,22 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::OwnerId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
+        on_update = "Cascade",
+        on_delete = "Restrict"
     )]
     User,
+
+    #[sea_orm(
+        belongs_to = "super::category::Entity",
+        from = "Column::CategoryId",
+        to = "super::category::Column::Id",
+
+        //связь с котегориями
+        on_update = "Cascade",
+        on_delete = "Restrict" // Запрет на удаление категории, если в ней есть товары
+    )]
+    Category,
 
     #[sea_orm(has_many = "super::order_product::Entity")]
     OrderProduct,
@@ -37,6 +55,12 @@ pub enum Relation {
 impl Related<super::user::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::User.def()
+    }
+}
+
+impl Related<super::category::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Category.def()
     }
 }
 
