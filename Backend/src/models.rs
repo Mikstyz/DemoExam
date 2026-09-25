@@ -1,4 +1,4 @@
-pub mod avatar;
+pub mod user_avatar;
 pub mod order;
 pub mod order_product;
 pub mod product;

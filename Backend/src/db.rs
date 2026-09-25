@@ -27,7 +27,7 @@ impl Db {
                 .if_not_exists()
                 .to_owned(),
             schema //User avatar model
-                .create_table_from_entity(models::avatar::Entity)
+                .create_table_from_entity(models::user_avatar::Entity)
                 .if_not_exists()
                 .to_owned(),
             schema //Product model
