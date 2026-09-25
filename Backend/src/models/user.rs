@@ -10,9 +10,9 @@ pub struct Model {
     pub login: String,
     pub password_hash: String,
 
-    pub first_name: String, //имя
-    pub last_name: String,  //фамилия
-    pub surname: String,    //отчество
+    pub first_name: String, // Имя
+    pub last_name: String,  // Фамилия
+    pub surname: String,    // Отчество
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -20,8 +20,8 @@ pub enum Relation {
     #[sea_orm(has_many = "super::order::Entity")]
     Order,
 
-    #[sea_orm(has_many = "super::product::Entity")]
-    Product,
+    #[sea_orm(has_many = "super::shop::Entity")]
+    Shop,
 
     #[sea_orm(has_one = "super::user_avatar::Entity")]
     Avatar,
@@ -33,9 +33,10 @@ impl Related<super::order::Entity> for Entity {
     }
 }
 
-impl Related<super::product::Entity> for Entity {
+// ДОБАВЛЕНО: Реализация связи с магазинами
+impl Related<super::shop::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Product.def()
+        Relation::Shop.def()
     }
 }
 

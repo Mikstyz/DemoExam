@@ -8,7 +8,7 @@ use uuid::Uuid;
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub owner_id: Uuid,
+    pub shop_id: Uuid,
     pub category_id: Uuid,
     pub created: DateTime<Utc>,
 
@@ -25,21 +25,21 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    // ИСПРАВЛЕНО: Связь теперь ведет строго к Магазину (Shop), а не к User.
+    // Изменен регистр Shop_id -> ShopId
     #[sea_orm(
-        belongs_to = "super::user::Entity",
-        from = "Column::OwnerId",
-        to = "super::user::Column::Id",
+        belongs_to = "super::shop::Entity",
+        from = "Column::ShopId",
+        to = "super::shop::Column::Id",
         on_update = "Cascade",
-        on_delete = "Restrict"
+        on_delete = "Cascade" // Если магазин удален — удаляются и все его товары
     )]
-    User,
+    Shop,
 
     #[sea_orm(
         belongs_to = "super::category::Entity",
         from = "Column::CategoryId",
         to = "super::category::Column::Id",
-
-        //связь с котегориями
         on_update = "Cascade",
         on_delete = "Restrict" // Запрет на удаление категории, если в ней есть товары
     )]
@@ -52,9 +52,10 @@ pub enum Relation {
     ProductImages,
 }
 
-impl Related<super::user::Entity> for Entity {
+// Теперь этот блок скомпилируется, так как в Relation появился вариант Shop
+impl Related<super::shop::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::User.def()
+        Relation::Shop.def()
     }
 }
 
