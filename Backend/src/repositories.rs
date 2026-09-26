@@ -1,4 +1,5 @@
 use crate::enums::filter;
+use crate::enums::sort_by;
 
 pub mod category;
 pub mod order;
@@ -9,7 +10,7 @@ pub mod user;
 
 pub struct SearchQuery {
     pub filters: Vec<filter::Filter>,
-    pub sort: Option<filter::SortBy>,
+    pub sort: Option<sort_by::SortBy>,
 }
 
 //Initialization user repositories

@@ -25,8 +25,6 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    // ИСПРАВЛЕНО: Связь теперь ведет строго к Магазину (Shop), а не к User.
-    // Изменен регистр Shop_id -> ShopId
     #[sea_orm(
         belongs_to = "super::shop::Entity",
         from = "Column::ShopId",
@@ -52,25 +50,28 @@ pub enum Relation {
     ProductImages,
 }
 
-// Теперь этот блок скомпилируется, так как в Relation появился вариант Shop
+// привязка к магазину
 impl Related<super::shop::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Shop.def()
     }
 }
 
+// привязка продукта к категории
 impl Related<super::category::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Category.def()
     }
 }
 
+// привязка продукта к заказу
 impl Related<super::order_product::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::OrderProduct.def()
     }
 }
 
+// привязка картинок товара к продукту
 impl Related<super::product_images::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::ProductImages.def()
