@@ -1,6 +1,7 @@
 use crate::enums::filter;
 use crate::enums::sort_by;
 
+pub mod auth;
 pub mod category;
 pub mod order;
 pub mod order_product;
