@@ -1,3 +1,7 @@
 pub struct ServicesOrder {}
 
-impl ServicesOrder {}
+impl ServicesOrder {
+    pub fn new() -> Self {
+        Self {}
+    }
+}

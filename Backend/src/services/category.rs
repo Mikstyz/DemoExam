@@ -1,3 +1,7 @@
 pub struct ServicesCategory {}
 
-impl ServicesCategory {}
+impl ServicesCategory {
+    pub fn new() -> Self {
+        Self {}
+    }
+}

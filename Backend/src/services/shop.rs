@@ -1,3 +1,7 @@
 pub struct ServicesShop {}
 
-impl ServicesShop {}
+impl ServicesShop {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
