@@ -1,9 +1,16 @@
-from datetime import datetime
+from __future__ import annotations
 
+from decimal import Decimal
+from typing import TYPE_CHECKING
+
+from sqlalchemy import CheckConstraint, Numeric
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy import CheckConstraint, UniqueConstraint
 
-import model
+if TYPE_CHECKING:
+    from .order import Order
+    from .product import Product
+    from .size import Size
+
 
 class OrderItem(SQLModel, table=True):
     __tablename__ = "order_items"
@@ -15,7 +22,7 @@ class OrderItem(SQLModel, table=True):
         ),
         CheckConstraint(
             "price >= 0",
-            name="ck_order_item_price_non_negative",
+            name="ck_order_item_price_nonnegative",
         ),
     )
 
@@ -23,40 +30,30 @@ class OrderItem(SQLModel, table=True):
         default=None,
         primary_key=True,
     )
-
     order_id: int = Field(
         foreign_key="orders.order_id",
-        nullable=False,
+        index=True,
     )
-
     product_id: int = Field(
         foreign_key="products.product_id",
-        nullable=False,
+        index=True,
     )
-
     size_id: int = Field(
         foreign_key="sizes.size_id",
-        nullable=False,
+        index=True,
     )
-
-    quantity: int = Field(
-        nullable=False,
-        gt=0,
-    )
-
-    price: float = Field(
-        nullable=False,
+    quantity: int = Field(gt=0)
+    price: Decimal = Field(
+        sa_type=Numeric(10, 2),
         ge=0,
     )
 
-    order: model.order.Order = Relationship(
+    order: "Order" = Relationship(
         back_populates="order_items",
     )
-
-    product: model.product.Product = Relationship(
+    product: "Product" = Relationship(
         back_populates="order_items",
     )
-
-    size: model.size.Size = Relationship(
+    size: "Size" = Relationship(
         back_populates="order_items",
     )

@@ -1,9 +1,13 @@
-from datetime import datetime
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy import CheckConstraint, UniqueConstraint
 
-import model
+if TYPE_CHECKING:
+    from .role import Role
+    from .order import Order
+
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
@@ -12,37 +16,24 @@ class User(SQLModel, table=True):
         default=None,
         primary_key=True,
     )
-
-    last_name: str = Field(
-        nullable=False,
-        max_length=100,
-    )
-
-    first_name: str = Field(
-        nullable=False,
-        max_length=100,
-    )
-
+    last_name: str = Field(max_length=100)
+    first_name: str = Field(max_length=100)
     middle_name: str | None = Field(
         default=None,
         max_length=100,
     )
-
     login: str = Field(
-        nullable=False,
-        unique=True,
         max_length=100,
+        unique=True,
+        index=True,
     )
-
     role_id: int = Field(
         foreign_key="roles.role_id",
-        nullable=False,
     )
 
-    role: model.role.Role = Relationship(
+    role: "Role" = Relationship(
         back_populates="users",
     )
-
-    orders: list["model.order.Order"] = Relationship(
+    orders: list["Order"] = Relationship(
         back_populates="user",
     )

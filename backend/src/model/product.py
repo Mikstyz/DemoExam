@@ -1,9 +1,15 @@
-from datetime import datetime
+from __future__ import annotations
 
+from decimal import Decimal
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Numeric
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy import CheckConstraint, UniqueConstraint
 
-import model
+if TYPE_CHECKING:
+    from .stock_item import StockItem
+    from .order_item import OrderItem
+
 
 class Product(SQLModel, table=True):
     __tablename__ = "products"
@@ -12,49 +18,39 @@ class Product(SQLModel, table=True):
         default=None,
         primary_key=True,
     )
-
     category: str = Field(
-        nullable=False,
         max_length=100,
+        index=True,
     )
-
     subcategory: str | None = Field(
         default=None,
         max_length=100,
     )
-
     image_path: str | None = Field(
         default=None,
         max_length=500,
     )
-
     product_name: str = Field(
-        nullable=False,
-        max_length=255,
+        max_length=200,
+        index=True,
     )
-
-    manufacturer: str = Field(
-        nullable=False,
-        max_length=255,
-    )
-
+    manufacturer: str = Field(max_length=150)
     description: str | None = Field(
         default=None,
+        max_length=2000,
     )
-
     composition: str | None = Field(
         default=None,
+        max_length=1000,
+    )
+    price: Decimal = Field(
+        sa_type=Numeric(10, 2),
+        gt=0,
     )
 
-    price: float = Field(
-        nullable=False,
-        ge=0,
-    )
-
-    stock_items: list["model.stock_item.StockItem"] = Relationship(
+    stock_items: list["StockItem"] = Relationship(
         back_populates="product",
     )
-
-    order_items: list["model.order_item.OrderItem"] = Relationship(
+    order_items: list["OrderItem"] = Relationship(
         back_populates="product",
     )

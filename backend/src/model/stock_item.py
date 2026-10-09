@@ -1,9 +1,14 @@
-from datetime import datetime
+from __future__ import annotations
 
-from sqlmodel import Field, Relationship, SQLModel
+from typing import TYPE_CHECKING
+
 from sqlalchemy import CheckConstraint, UniqueConstraint
+from sqlmodel import Field, Relationship, SQLModel
 
-import model
+if TYPE_CHECKING:
+    from .product import Product
+    from .size import Size
+
 
 class StockItem(SQLModel, table=True):
     __tablename__ = "stock_items"
@@ -16,7 +21,7 @@ class StockItem(SQLModel, table=True):
         ),
         CheckConstraint(
             "quantity_available >= 0",
-            name="ck_stock_quantity_non_negative",
+            name="ck_stock_quantity_nonnegative",
         ),
     )
 
@@ -24,27 +29,22 @@ class StockItem(SQLModel, table=True):
         default=None,
         primary_key=True,
     )
-
     product_id: int = Field(
         foreign_key="products.product_id",
-        nullable=False,
+        index=True,
     )
-
     size_id: int = Field(
         foreign_key="sizes.size_id",
-        nullable=False,
+        index=True,
     )
-
     quantity_available: int = Field(
         default=0,
-        nullable=False,
         ge=0,
     )
 
-    product: model.product.Product = Relationship(
+    product: "Product" = Relationship(
         back_populates="stock_items",
     )
-
-    size: model.size.Size = Relationship(
+    size: "Size" = Relationship(
         back_populates="stock_items",
     )

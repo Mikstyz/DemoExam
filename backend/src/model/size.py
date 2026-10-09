@@ -1,9 +1,14 @@
-from datetime import datetime
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy import CheckConstraint, UniqueConstraint
 
-import model
+if TYPE_CHECKING:
+    from .stock_item import StockItem
+    from .order_item import OrderItem
+
 
 class Size(SQLModel, table=True):
     __tablename__ = "sizes"
@@ -12,17 +17,15 @@ class Size(SQLModel, table=True):
         default=None,
         primary_key=True,
     )
-
     size_value: str = Field(
-        nullable=False,
-        unique=True,
         max_length=50,
+        unique=True,
+        index=True,
     )
 
-    stock_items: list["model.stock_item.StockItem"] = Relationship(
+    stock_items: list["StockItem"] = Relationship(
         back_populates="size",
     )
-
-    order_items: list["model.order_item.OrderItem"] = Relationship(
+    order_items: list["OrderItem"] = Relationship(
         back_populates="size",
     )

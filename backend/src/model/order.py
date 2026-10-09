@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy import CheckConstraint, UniqueConstraint
 
-import model
+if TYPE_CHECKING:
+    from .user import User
+    from .order_item import OrderItem
+
 
 class Order(SQLModel, table=True):
     __tablename__ = "orders"
@@ -12,20 +17,18 @@ class Order(SQLModel, table=True):
         default=None,
         primary_key=True,
     )
-
     order_date: datetime = Field(
-        nullable=False,
+        default_factory=datetime.now,
+        index=True,
     )
-
     user_id: int = Field(
         foreign_key="users.user_id",
-        nullable=False,
+        index=True,
     )
 
-    user: model.user.User = Relationship(
+    user: "User" = Relationship(
         back_populates="orders",
     )
-
-    order_items: list["model.order_item.OrderItem"] = Relationship(
+    order_items: list["OrderItem"] = Relationship(
         back_populates="order",
     )
