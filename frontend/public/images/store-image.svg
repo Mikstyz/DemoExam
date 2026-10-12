@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300" role="img" aria-label="Чудо Обувь">
+  <rect width="640" height="300" rx="24" fill="#e8efe7"/>
+  <rect x="32" y="32" width="576" height="236" rx="18" fill="#f7faf5" stroke="#c9d8c7" stroke-width="2"/>
+  <path d="M122 179c29-5 48-28 58-54 4-11 12-13 20-4l35 37c19 20 39 23 66 25 17 1 28 9 28 22 0 10-9 17-23 17H136c-21 0-34-8-34-21 0-11 7-18 20-22Z" fill="#36563d"/>
+  <path d="M138 207h176c9 0 14 3 14 8 0 6-7 9-17 9H140c-14 0-22-4-22-9 0-4 7-8 20-8Z" fill="#b4c8af"/>
+  <path d="M182 129c-2 18 11 32 29 45m-8-52 37 38m-22-48 35 35" fill="none" stroke="#d8e5d4" stroke-width="6" stroke-linecap="round"/>
+  <text x="365" y="130" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#263d2c">Чудо Обувь</text>
+  <text x="365" y="160" font-family="Arial, sans-serif" font-size="15" fill="#657666">Ваша пара на каждый день</text>
+  <path d="M365 181h178" stroke="#c9d8c7" stroke-width="2"/>
+  <text x="365" y="207" font-family="Arial, sans-serif" font-size="12" letter-spacing="2" fill="#36563d">КАТАЛОГ · ЗАКАЗЫ</text>
+</svg>

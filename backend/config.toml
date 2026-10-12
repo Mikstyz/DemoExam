@@ -1,2 +1,2 @@
-db_conn = "postgresql://mks:0241@127.0.0.1:5432/demo"
-storage_dir = "/storage"
+db_conn = "postgresql+psycopg://mks:0241@localhost:5432/chudo_obuv"
+storage_dir = "./data"
