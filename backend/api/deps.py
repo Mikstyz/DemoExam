@@ -5,6 +5,10 @@ from db.database import engine
 from repositories.user import UserRepository
 from model import User
 
+MANAGER_ROLES = ("manager", "менеджер", "admin", "administrator", "администратор")
+ADMIN_ROLES = ("admin", "administrator", "администратор")
+EDITOR_ROLES = MANAGER_ROLES
+
 
 def get_session() -> Generator[Session, None, None]:
     with Session(engine) as session:

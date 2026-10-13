@@ -1,255 +1,145 @@
-# «Чудо Обувь»
+# Чудо Обувь
 
-Веб-приложение для каталога обуви, оформления заказов и управления товарами и заказами.
+Учебный веб-магазин обуви. Backend написан на Python и FastAPI, данные хранятся в PostgreSQL. Frontend сделан на обычных HTML, CSS и JavaScript: Node.js, npm, React и сборщик для запуска не нужны.
 
-## 1. Технологии
+## Возможности
 
-- Backend: Python, FastAPI, SQLModel, SQLAlchemy, Psycopg.
-- База данных: PostgreSQL.
-- Frontend: React, TypeScript, Vite.
-- Импорт исходных данных: Excel (`.xlsx`).
+- каталог с поиском, фильтрами по категории и подкатегории, сортировкой по цене;
+- карточки товаров с размерами, остатками и автоматической скидкой, если она предусмотрена backend;
+- вход по логину из базы данных;
+- корзина и оформление заказа с проверкой остатков на сервере;
+- просмотр своих заказов;
+- функции менеджера и администратора: редактирование товаров, загрузка изображений, изменение остатков и удаление заказов;
+- функции администратора: изменение даты заказа, количества в позиции и удаление позиции заказа.
 
-## 2. Структура проекта
+## Требования
 
-Ожидаемая структура:
+- Python 3.12 или 3.13 рекомендуется;
+- PostgreSQL;
+- pip.
 
-```text
-chudo_obuv_project/
-├── backend/
-│   ├── main.py
-│   ├── config.toml
-│   ├── requirements.txt
-│   ├── api/
-│   ├── model/
-│   ├── repositories/
-│   ├── services/
-│   ├── db/
-│   ├── scripts/
-│   └── import_data/
-└── frontend/
-    ├── package.json
-    ├── index.html
-    └── src/
-```
+Node.js и npm не используются.
 
-Команды ниже рассчитаны на то, что `main.py` находится в `backend/`.
+## 1. Настроить PostgreSQL
 
-## 3. Что установить
-
-Установи Python (лучше 3.12 или 3.13, если зависимости не проверены на более новых версиях), Node.js LTS с npm и PostgreSQL.
-
-Проверь установку:
-
-```bash
-python --version
-node --version
-npm --version
-psql --version
-```
-
-На некоторых системах Python вызывается командой `python3`.
-
-## 4. Запуск PostgreSQL и создание базы
-
-Проверь службу:
+Убедись, что служба запущена:
 
 ```bash
 sudo systemctl status postgresql
-```
-
-Если она остановлена:
-
-```bash
 sudo systemctl start postgresql
-```
-
-Проверь порт:
-
-```bash
 pg_isready -h localhost -p 5432
 ```
 
-Если роль и база ещё не существуют, создай их. Открой консоль PostgreSQL:
+Если база и роль ещё не созданы, открой консоль PostgreSQL:
 
 ```bash
 sudo -u postgres psql
 ```
 
-Выполни, заменив пароль на свой:
+Затем создай роль и базу, подставив собственный пароль:
 
 ```sql
-CREATE ROLE chudo_user WITH LOGIN PASSWORD 'replace_with_your_password';
+CREATE ROLE chudo_user WITH LOGIN PASSWORD 'your_password';
 CREATE DATABASE chudo_obuv OWNER chudo_user;
-```
-
-Выход:
-
-```sql
 \q
 ```
 
-Если база или роль уже существуют, не создавай их повторно и не удаляй имеющиеся данные.
+Если база или роль уже существуют, не создавай их повторно и не удаляй данные.
 
-## 5. Настройка `backend/config.toml`
+## 2. Настроить подключение
 
-В `backend/config.toml` укажи свои параметры PostgreSQL. Пример:
+Открой `backend/config.toml` и укажи свои параметры:
 
 ```toml
-db_conn = "postgresql+psycopg://chudo_user:replace_with_your_password@localhost:5432/chudo_obuv"
+db_conn = "postgresql+psycopg://chudo_user:your_password@localhost:5432/chudo_obuv"
 storage_dir = "./data"
 ```
 
-Используй фактические имя пользователя, пароль и имя базы. Если пароль содержит символы `@`, `:`, `/` или `#`, их может потребоваться URL-кодировать в строке подключения.
+В архиве пароль намеренно заменён заглушкой. Приложение не запустится до настройки `db_conn`. Не публикуй конфигурацию с настоящим паролем.
 
-Не публикуй файл с реальным паролем в открытом репозитории.
+Если пароль содержит `@`, `:`, `/` или `#`, специальные символы в URL могут потребовать кодирования.
 
-## 6. Установка backend-зависимостей
+## 3. Установить backend
 
-Перейди в backend:
+В первом терминале:
 
 ```bash
 cd /путь/к/chudo_obuv_project/backend
-```
-
-Рекомендуется отдельное виртуальное окружение:
-
-```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Если виртуальное окружение уже создано в корне проекта (`chudo_obuv_project/.venv`), активируй его из `backend/` так:
+Если виртуальное окружение уже лежит в корне проекта (`chudo_obuv_project/.venv`), активируй его вместо создания нового:
 
 ```bash
 source ../.venv/bin/activate
 ```
 
-Используй то окружение, куда устанавливаешь зависимости. Не устанавливай пакеты в один Python, а сервер не запускай из другого.
-
-Если `requirements.txt` отсутствует, можно установить основной набор вручную:
+Проверить зависимости:
 
 ```bash
-python -m pip install fastapi "uvicorn[standard]" sqlmodel "psycopg[binary]" openpyxl python-multipart
+python -c "import fastapi, sqlmodel, psycopg; print('Зависимости установлены')"
 ```
 
-Проверь импорт:
+## 4. Импортировать данные
 
-```bash
-python -c "import fastapi, sqlmodel, sqlalchemy, psycopg; print('Зависимости установлены')"
-```
+Исходные Excel-файлы должны находиться в `backend/import_data/`. В комплекте проекта используются:
 
-## 7. Импорт Excel-данных
+- `Users_import.xlsx`
+- `Products_import.xlsx`
+- `Sizes_import.xlsx`
+- `Stock_Items_import.xlsx`
+- `Orders_import.xlsx`
 
-Если импортные файлы предусмотрены заданием, они обычно размещаются в `backend/import_data/`. В этой версии проекта ожидаются файлы примерно с такими именами:
-
-```text
-Users_import.xlsx
-Products_import.xlsx
-Sizes_import.xlsx
-Stock_Items_import.xlsx
-Orders_import.xlsx
-```
-
-Проверь реальные имена файлов и заголовки столбцов по коду `scripts/import_data.py`.
-
-Если импортёр реализован как Python-модуль, запускай его из `backend/`:
+Перед импортом проверь структуру файлов. Затем из `backend/` запусти:
 
 ```bash
 python -m scripts.import_data
 ```
 
-Перед запуском изучи доступные параметры скрипта. Не используй опцию сброса (`--reset`), если нужно сохранить данные. Перед повторным импортом сделай резервную копию базы.
+Не используй параметры сброса данных, если нужно сохранить существующие записи. Перед повторным импортом рекомендуется сделать резервную копию базы.
 
-## 8. Запуск backend
+## 5. Запустить приложение
 
-**Запускай Uvicorn из каталога `backend/`, а не из корня проекта.** Иначе Python может не найти `main.py`.
+Из папки `backend/`, с активированным виртуальным окружением:
 
 ```bash
-cd /путь/к/chudo_obuv_project/backend
-source .venv/bin/activate
 python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Если `.venv` находится в корне проекта, используй `source ../.venv/bin/activate`.
+**Важно:** `main.py` находится в `backend/`. Запуск Uvicorn из корня проекта приводит к ошибке `Could not import module "main"`.
 
-После запуска доступны:
+Открой в браузере:
 
-- API: `http://127.0.0.1:8000`
-- Swagger UI: `http://127.0.0.1:8000/docs`
-- OpenAPI JSON: `http://127.0.0.1:8000/openapi.json`
+- сайт: http://127.0.0.1:8000/
+- проверка сервера: http://127.0.0.1:8000/health
+- документация API: http://127.0.0.1:8000/docs
 
-Swagger UI доступен, если документация не отключена в приложении.
+Backend одновременно отдаёт HTML, CSS, JavaScript и изображения. Второй сервер для фронтенда не нужен.
 
-## 9. Запуск frontend
+## Обычный запуск после установки
 
-Открой второй терминал:
+1. Запусти PostgreSQL, если он остановлен: `sudo systemctl start postgresql`.
+2. Открой терминал в `backend/`.
+3. Активируй окружение: `source .venv/bin/activate` (либо `source ../.venv/bin/activate`, если окружение в корне).
+4. Запусти `python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000`.
+5. Открой http://127.0.0.1:8000/.
 
-```bash
-cd /путь/к/chudo_obuv_project/frontend
-npm install
-npm run dev
-```
-
-Открой адрес, который Vite напечатает в терминале. Обычно это `http://localhost:5173`, но порт может отличаться, если он занят.
-
-Если `npm run dev` отсутствует, проверь раздел `scripts` в `frontend/package.json`.
-
-## 10. Обычный порядок запуска
-
-1. Запусти PostgreSQL:
-
-   ```bash
-   sudo systemctl start postgresql
-   ```
-
-2. В первом терминале запусти backend из `backend/`:
-
-   ```bash
-   cd /путь/к/chudo_obuv_project/backend
-   source .venv/bin/activate
-   python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-   ```
-
-   Если окружение лежит в корне проекта, используй `source ../.venv/bin/activate`.
-
-3. Во втором терминале запусти frontend:
-
-   ```bash
-   cd /путь/к/chudo_obuv_project/frontend
-   npm run dev
-   ```
-
-Оба терминала с приложением должны оставаться открытыми.
-
-## 11. Частые ошибки
+## Частые ошибки
 
 ### `Could not import module "main"`
 
-Чаще всего Uvicorn запущен не из `backend/` или в самом `main.py` есть ошибка импорта:
+Uvicorn, скорее всего, запущен не из `backend/`. Перейди в `backend/` и запусти команду из раздела выше. Если ошибка сохраняется, смотри полный traceback: причиной может быть ошибка импорта или настройки.
 
-```bash
-cd /путь/к/chudo_obuv_project/backend
-python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-```
+### `В config.toml остались шаблонные USER:PASSWORD`
 
-Если ошибка повторяется, изучи полный traceback: настоящая причина обычно указана выше строки `Could not import module "main"`.
+Открой `backend/config.toml` и замени заглушку реальными данными PostgreSQL.
 
-### `ModuleNotFoundError: No module named 'sqlmodel'`
+### `connection refused` на порту 5432
 
-Зависимости установлены не в то окружение:
-
-```bash
-which python
-python -m pip --version
-python -m pip install -r requirements.txt
-python -c "import sqlmodel; print(sqlmodel.__version__)"
-```
-
-### `connection refused` на `localhost:5432`
-
-PostgreSQL не запущен или не слушает порт:
+PostgreSQL не запущен или не слушает этот порт:
 
 ```bash
 sudo systemctl status postgresql
@@ -257,47 +147,84 @@ sudo systemctl start postgresql
 pg_isready -h localhost -p 5432
 ```
 
-### `role "..." does not exist`
+### `role does not exist`
 
-Пользователь в `config.toml` не совпадает с существующей ролью PostgreSQL. Проверь `db_conn`.
+Имя пользователя в `db_conn` не совпадает с ролью PostgreSQL.
 
 ### `password authentication failed`
 
-Проверь пароль и правила аутентификации PostgreSQL.
+Проверь пароль в `config.toml` и правила подключения PostgreSQL.
 
-### `database "..." does not exist`
+### `ModuleNotFoundError`
 
-Создай базу данных или исправь имя базы в `db_conn`.
+Установи зависимости в том же окружении, из которого запускаешь сервер:
 
-### Frontend не загружает данные или выдаёт `fetch` error
+```bash
+python -m pip install -r requirements.txt
+```
 
-1. Убедись, что backend работает.
-2. Открой `http://127.0.0.1:8000/docs`.
-3. Проверь адрес API в настройках frontend.
-4. Посмотри ошибки в браузере во вкладках **Console** и **Network**.
-5. Если браузер сообщает об ошибке CORS, проверь CORS-настройки backend.
+### Сайт открылся, но каталог пустой
 
-### Изменения моделей не отражаются в PostgreSQL
+Проверь, что импортированы исходные Excel-файлы, сервер подключён к правильной базе и API отвечает на `http://127.0.0.1:8000/api/products`.
 
-`SQLModel.metadata.create_all()` создаёт отсутствующие таблицы, но не обновляет структуру уже существующих. Для изменения схемы нужна миграция или аккуратное пересоздание базы. Не удаляй базу без резервной копии.
+### Изменения модели не появились в старой базе
 
-## 12. Резервное копирование базы
+`SQLModel.metadata.create_all()` создаёт отсутствующие таблицы, но не обновляет существующую структуру. Для изменений существующей схемы нужна миграция. Не удаляй базу без резервной копии.
 
-Перед импортом, сбросом данных или изменением схемы можно сохранить базу так:
+## Резервная копия
 
 ```bash
 pg_dump -h localhost -p 5432 -U chudo_user -d chudo_obuv -F c -f chudo_obuv_backup.dump
 ```
 
-Восстановление выполняется через `pg_restore` в подходящую базу. Не восстанавливай поверх нужных данных без понимания последствий.
+Перед сбросом данных, повторным импортом или изменением схемы сначала сохрани резервную копию.
 
-## 13. Полезные адреса
+## Как изменять интерфейс
 
-| Назначение | Адрес |
-|---|---|
-| Frontend | `http://localhost:5173` (проверь вывод Vite) |
-| Backend API | `http://127.0.0.1:8000` |
-| Swagger UI | `http://127.0.0.1:8000/docs` |
-| OpenAPI JSON | `http://127.0.0.1:8000/openapi.json` |
+- `frontend/index.html` — базовая HTML-структура;
+- `frontend/style.css` — оформление, сетки, цвета и мобильная версия;
+- `frontend/app.js` — загрузка данных, действия пользователя и отрисовка страниц;
+- `backend/api/` — API-маршруты;
+- `backend/services/` — бизнес-логика;
+- `backend/model/` — модели базы данных.
 
-Точный адрес frontend всегда указан в терминале после запуска Vite.
+После изменения HTML, CSS или JavaScript обнови страницу в браузере. Сборка фронтенда не требуется.
+
+## Важное замечание по авторизации
+
+Текущий backend учебного проекта использует вход по логину без пароля и передаёт ID пользователя через `X-User-ID`. Это удобно для демонстрации, но не подходит для реального магазина без полноценной аутентификации и проверки сессий.
+
+
+## Структура фронтенда без Node.js
+
+Фронтенд использует нативные ES-модули браузера. Сборка не требуется.
+
+```text
+frontend/
+├── index.html
+├── style.css
+├── css/
+│   ├── tokens.css
+│   ├── base.css
+│   └── components.css
+├── js/
+│   ├── app.js
+│   └── views/
+│       └── screens.js
+└── public/
+    └── images/
+```
+
+Для изменения внешнего вида начни с `frontend/css/`. Разметка экранов находится в `frontend/js/views/screens.js`, обработка событий и запросы к API — в `frontend/js/app.js`.
+
+## Упрощённая структура кода
+
+Во фронтенде нет сборщика и стороннего UI-фреймворка. Код разделён по назначению:
+
+- `frontend/js/app.js` — состояние приложения и обработчики действий пользователя.
+- `frontend/js/api.js` — запросы к FastAPI и обработка HTTP-ответов.
+- `frontend/js/utils.js` — форматирование, роли, экранирование текста и пути изображений.
+- `frontend/js/views/screens.js` — разметка экранов.
+- `frontend/style.css` подключает стили из `frontend/css/`.
+
+В backend общие списки ролей находятся в `backend/api/deps.py`, чтобы категории, товары и заказы использовали одинаковые правила доступа. Модели, маршруты и импорт данных оставлены отдельными для удобства изменений.

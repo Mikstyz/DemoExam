@@ -1,14 +1,20 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta name="theme-color" content="#263d2c" />
-    <title>Чудо Обувь</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f3">
+  <title>Чудо Обувь</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header id="site-header"></header>
+    <div id="messages" aria-live="polite"></div>
+    <main id="app-main"><p class="empty-state">Загружаем приложение…</p></main>
+    <footer class="footer">Чудо Обувь · учебный проект</footer>
+  </div>
+</body>
 </html>

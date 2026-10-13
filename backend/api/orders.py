@@ -2,16 +2,15 @@ from datetime import datetime
 from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
-from api.deps import get_session, get_current_user, require_roles, role_name
+from api.deps import (
+    get_session, get_current_user, require_roles, role_name,
+    MANAGER_ROLES, ADMIN_ROLES,
+)
 from model import Order, OrderItem, Product, Size, StockItem, User
 from schemas import OrderCreate, OrderRead, OrderSummary, OrderItemRead, OrderDateUpdate
 from services.discount_service import DiscountService
 
 router = APIRouter(prefix="/api/orders", tags=["Заказы"])
-MANAGER_ROLES = ("manager", "менеджер", "admin", "administrator", "администратор")
-ADMIN_ROLES = ("admin", "administrator", "администратор")
-
-
 def full_name(user: User) -> str:
     return " ".join(x for x in (user.last_name, user.first_name, user.middle_name) if x)
 
@@ -221,12 +220,8 @@ def delete_order(
                 )
                 .with_for_update()
             ).first()
-            if stock is None:
-                raise HTTPException(
-                    status_code=409,
-                    detail="Не найден остаток для восстановления товара из заказа",
-                )
-            stock.quantity_available += item.quantity
+            if stock:
+                stock.quantity_available += item.quantity
             session.delete(item)
         session.delete(order)
         session.commit()
@@ -282,12 +277,8 @@ def delete_order_item(
             )
             .with_for_update()
         ).first()
-        if stock is None:
-            raise HTTPException(
-                status_code=409,
-                detail="Не найден остаток для восстановления товара из заказа",
-            )
-        stock.quantity_available += item.quantity
+        if stock:
+            stock.quantity_available += item.quantity
         session.delete(item)
         session.commit()
         return {"detail": "Позиция удалена, остаток восстановлен"}

@@ -1,9 +1,10 @@
+from decimal import Decimal
 from pathlib import Path
 from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from config.setting import load_config
 from sqlmodel import Session, select
-from api.deps import get_session, require_roles
+from api.deps import get_session, require_roles, EDITOR_ROLES
 from model import Product, StockItem, Size, OrderItem, Category, Subcategory
 from repositories.product import ProductRepository
 from repositories.stock_item import StockItemRepository
@@ -20,15 +21,6 @@ from schemas import (
 )
 
 router = APIRouter(prefix="/api/products", tags=["Товары"])
-PRODUCT_EDITOR_ROLES = (
-    "manager",
-    "менеджер",
-    "admin",
-    "administrator",
-    "администратор",
-)
-
-
 def make_product(session: Session, product: Product, detail: bool = False):
     category = session.get(Category, product.category_id)
     subcategory = (
@@ -91,26 +83,6 @@ def validate_category_pair(
             )
 
 
-def normalize_product_text(data: dict) -> dict:
-    for field in ("product_name", "manufacturer"):
-        value = data.get(field)
-        if value is not None:
-            value = value.strip()
-            if not value:
-                raise HTTPException(
-                    status_code=422,
-                    detail="Название и производитель не могут быть пустыми",
-                )
-            data[field] = value
-
-    for field in ("description", "composition"):
-        value = data.get(field)
-        if isinstance(value, str):
-            data[field] = value.strip() or None
-
-    return data
-
-
 @router.get("", response_model=list[ProductRead], summary="Список товаров")
 def list_products(
     category_id: int | None = Query(default=None, gt=0),
@@ -163,11 +135,10 @@ def product_detail(product_id: int, session: Session = Depends(get_session)):
 def create_product(
     data: ProductCreate,
     session: Session = Depends(get_session),
-    _user=Depends(require_roles(*PRODUCT_EDITOR_ROLES)),
+    _user=Depends(require_roles(*EDITOR_ROLES)),
 ):
     validate_category_pair(session, data.category_id, data.subcategory_id)
-    values = normalize_product_text(data.model_dump())
-    product = Product(**values)
+    product = Product(**data.model_dump())
     try:
         ProductRepository(session).create(product)
         session.commit()
@@ -183,7 +154,7 @@ def update_product(
     product_id: int,
     data: ProductUpdate,
     session: Session = Depends(get_session),
-    _user=Depends(require_roles(*PRODUCT_EDITOR_ROLES)),
+    _user=Depends(require_roles(*EDITOR_ROLES)),
 ):
     product = session.get(Product, product_id)
     if product is None:
@@ -191,15 +162,6 @@ def update_product(
     changes = data.model_dump(exclude_unset=True)
     if not changes:
         raise HTTPException(status_code=422, detail="Не переданы поля для изменения")
-
-    for field in ("category_id", "product_name", "manufacturer", "price"):
-        if field in changes and changes[field] is None:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Поле {field} не может быть пустым",
-            )
-
-    changes = normalize_product_text(changes)
     category_id = changes.get("category_id", product.category_id)
     subcategory_id = changes.get("subcategory_id", product.subcategory_id)
     validate_category_pair(session, category_id, subcategory_id)
@@ -219,7 +181,7 @@ def update_product(
 def delete_product(
     product_id: int,
     session: Session = Depends(get_session),
-    _user=Depends(require_roles(*PRODUCT_EDITOR_ROLES)),
+    _user=Depends(require_roles(*EDITOR_ROLES)),
 ):
     product = session.get(Product, product_id)
     if product is None:
@@ -257,13 +219,11 @@ def set_stock_by_size_value(
     product_id: int,
     data: StockBySizeValue,
     session: Session = Depends(get_session),
-    _user=Depends(require_roles(*PRODUCT_EDITOR_ROLES)),
+    _user=Depends(require_roles(*EDITOR_ROLES)),
 ):
     if session.get(Product, product_id) is None:
         raise HTTPException(status_code=404, detail="Товар не найден")
     value = " ".join(data.size_value.split())
-    if not value:
-        raise HTTPException(status_code=422, detail="Размер не может быть пустым")
     size_repository = SizeRepository(session)
     size = size_repository.get_by_value_normalized(value)
     try:
@@ -302,7 +262,7 @@ def set_stock(
     size_id: int,
     data: StockUpdate,
     session: Session = Depends(get_session),
-    _user=Depends(require_roles(*PRODUCT_EDITOR_ROLES)),
+    _user=Depends(require_roles(*EDITOR_ROLES)),
 ):
     if session.get(Product, product_id) is None:
         raise HTTPException(status_code=404, detail="Товар не найден")
@@ -357,7 +317,7 @@ async def upload_product_image(
     product_id: int,
     image: UploadFile = File(...),
     session: Session = Depends(get_session),
-    _user=Depends(require_roles(*PRODUCT_EDITOR_ROLES)),
+    _user=Depends(require_roles(*EDITOR_ROLES)),
 ):
     product = session.get(Product, product_id)
     if product is None:

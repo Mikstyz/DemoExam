@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from api.deps import get_session, require_roles
+from api.deps import get_session, require_roles, EDITOR_ROLES
 from model import Category, Subcategory, Product
 from schemas import (
     CategoryCreate,
@@ -12,9 +12,6 @@ from schemas import (
 )
 
 router = APIRouter(prefix="/api", tags=["Категории"])
-EDITOR_ROLES = ("manager", "менеджер", "admin", "administrator", "администратор")
-
-
 @router.get(
     "/categories", response_model=list[CategoryRead], summary="Список категорий"
 )
@@ -179,14 +176,6 @@ def update_subcategory(
     if subcategory is None:
         raise HTTPException(status_code=404, detail="Подкатегория не найдена")
     changes = data.model_dump(exclude_unset=True)
-    if "name" in changes and changes["name"] is None:
-        raise HTTPException(
-            status_code=422,
-            detail="Название подкатегории не может быть пустым",
-        )
-    if "category_id" in changes and changes["category_id"] is None:
-        raise HTTPException(status_code=422, detail="Категория обязательна")
-
     category_id = changes.get("category_id", subcategory.category_id)
     name = " ".join(changes.get("name", subcategory.name).split())
     if session.get(Category, category_id) is None:

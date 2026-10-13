@@ -16,14 +16,18 @@ class ConfigModel(BaseModel):
 
 def load_config() -> ConfigModel:
     if not CONFIG_PATH.is_file():
-        raise FileNotFoundError(f"Не найден файл настроек {CONFIG_PATH} к PostgreSQL.")
+        raise FileNotFoundError(
+            f"Не найден файл настроек {CONFIG_PATH} к PostgreSQL."
+        )
 
     with CONFIG_PATH.open("rb") as file:
         config = ConfigModel(**tomllib.load(file))
 
-    if "USER:PASSWORD@" in config.db_conn or config.db_conn.startswith(
+    if any(marker in config.db_conn for marker in ("USER:PASSWORD@", "YOUR_USER", "YOUR_PASSWORD")) or config.db_conn.startswith(
         "postgresql+psycopg://USER:"
     ):
-        raise ValueError(f"В {CONFIG_PATH} остались шаблонные USER:PASSWORD")
+        raise ValueError(
+            f"В {CONFIG_PATH} остались шаблонные реквизиты подключения к PostgreSQL"
+        )
 
     return config
